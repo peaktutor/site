@@ -1,21 +1,16 @@
-import React, { ReactNode } from 'react';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import FloatingContact from './FloatingContact';
+// app/layout.tsx
+import React from 'react';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export default function Layout({ children }: LayoutProps) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow">
-        {children}
-      </main>
-      <FloatingContact />
-      <Footer />
-    </div>
+    <html lang="en">
+      <body>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
   );
 }
