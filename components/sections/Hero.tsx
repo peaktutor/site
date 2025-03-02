@@ -82,7 +82,7 @@ const Hero = () => {
         style={{
           background: `
             radial-gradient(circle at ${gradientPosition}, 
-              #87CEEB 0%,    /* Sky Blue */
+              #60A5FA 0%,    /* Medium Blue */
               #3B82F6 40%,   /* Light Blue */
               #1E40AF 100%   /* Dark Blue */
             )
