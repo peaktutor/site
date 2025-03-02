@@ -1,7 +1,7 @@
 // app/components/sections/CTASection.tsx
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import  Container  from '@/components/ui/Container';
+import Container from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 
 const CTASection = () => {
@@ -16,6 +16,8 @@ const CTASection = () => {
     subject: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -62,17 +64,65 @@ const CTASection = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formState);
-    alert('Form submitted successfully!');
-    setFormState({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: '',
+  // Use a direct submit function just like your working call button
+  const handleDirectSubmit = () => {
+    // Your form submission code here
+    console.log("Form values:", formState);
+    
+    // Get current date for the email template
+    const today = new Date();
+    const submissionDate = today.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    // Show loading state
+    setIsSubmitting(true);
+    
+    // Import EmailJS dynamically
+    import('@emailjs/browser').then((emailjs) => {
+      // Prepare template parameters
+      const templateParams = {
+        firstName: formState.firstName,
+        lastName: formState.lastName,
+        email: formState.email,
+        phone: formState.phone,
+        subject: formState.subject || 'Not specified',
+        message: formState.message || 'No additional information provided',
+        submissionDate: submissionDate
+      };
+      
+      // Send email using EmailJS
+      emailjs.send(
+        'service_ykbe95b',  // Service ID
+        'template_qy47u7f', // Template ID
+        templateParams,
+        '4bK1N7SOkKNwMkqk0' // Public Key
+      )
+      .then(() => {
+        console.log('Email sent successfully!');
+        setSubmitStatus('success');
+        // Reset form
+        setFormState({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+        });
+      })
+      .catch((error) => {
+        console.error('Failed to send email:', error);
+        setSubmitStatus('error');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
     });
   };
 
@@ -144,45 +194,33 @@ const CTASection = () => {
               <div className="mb-10">
                 {/* Enhanced call button with animation effects */}
                 <div className="relative group">
-                  <button
+                  <Button
+                    variant="white"
+                    size="lg"
                     onClick={handleConsultationClick}
-                    className="flex items-center justify-center gap-2 px-6 py-3 text-lg font-medium text-blue-900 bg-white rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-300/30 overflow-hidden group-hover:text-white group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:to-indigo-600"
+                    className="flex items-center justify-center gap-2 px-6 py-3 text-lg font-medium cursor-pointer"
+                    icon={
+                      <span className="relative">
+                        <svg 
+                          className="w-5 h-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                        <span className="absolute top-0 left-0 w-full h-full rounded-full bg-blue-400/30 animate-ping opacity-75"></span>
+                      </span>
+                    }
                   >
-                    {/* Phone icon with pulse effect */}
-                    <span className="relative">
-                      <svg 
-                        className="w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      <span className="absolute top-0 left-0 w-full h-full rounded-full bg-blue-400/30 animate-ping opacity-75"></span>
-                    </span>
-                    
-                    <span>Call for Free Consultation</span>
-                    
-                    {/* Animated arrow */}
-                    <svg 
-                      className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24" 
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
-                  
-                  {/* Glass morphism glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-lg blur opacity-0 group-hover:opacity-30 transition-opacity duration-1000 group-hover:duration-200 animate-gradient-x"></div>
+                    Call for Free Consultation
+                  </Button>
                 </div>
               </div>
               
@@ -231,7 +269,32 @@ const CTASection = () => {
                 </div>
               </div>
               
-              <form className="space-y-5" onSubmit={handleSubmit}>
+              {/* Status messages */}
+              {submitStatus === 'success' && (
+                <div className="mb-6 p-4 bg-green-100 text-green-800 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="font-medium">Thank you! Your information has been submitted successfully.</span>
+                  </div>
+                  <p className="mt-2 text-sm">We'll contact you shortly to discuss your tutoring needs.</p>
+                </div>
+              )}
+              
+              {submitStatus === 'error' && (
+                <div className="mb-6 p-4 bg-red-100 text-red-800 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="font-medium">Oops! Something went wrong.</span>
+                  </div>
+                  <p className="mt-2 text-sm">Please try again or call us directly at (561) 870-3273.</p>
+                </div>
+              )}
+              
+              <div className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="group">
                     <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1 group-focus-within:text-blue-600 transition-colors">
@@ -240,11 +303,12 @@ const CTASection = () => {
                     <input
                       type="text"
                       id="firstName"
+                      name="firstName"
                       value={formState.firstName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 transition-all duration-200"
                       placeholder="Enter your first name"
-                      required
+                      disabled={isSubmitting}
                     />
                   </div>
                   <div className="group">
@@ -254,11 +318,12 @@ const CTASection = () => {
                     <input
                       type="text"
                       id="lastName"
+                      name="lastName"
                       value={formState.lastName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 transition-all duration-200"
                       placeholder="Enter your last name"
-                      required
+                      disabled={isSubmitting}
                     />
                   </div>
                 </div>
@@ -270,11 +335,12 @@ const CTASection = () => {
                   <input
                     type="email"
                     id="email"
+                    name="email"
                     value={formState.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 transition-all duration-200"
                     placeholder="you@example.com"
-                    required
+                    disabled={isSubmitting}
                   />
                 </div>
                 
@@ -285,11 +351,12 @@ const CTASection = () => {
                   <input
                     type="tel"
                     id="phone"
+                    name="phone"
                     value={formState.phone}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 transition-all duration-200"
                     placeholder="(555) 555-5555"
-                    required
+                    disabled={isSubmitting}
                   />
                 </div>
                 
@@ -300,18 +367,19 @@ const CTASection = () => {
                   <div className="relative">
                     <select
                       id="subject"
+                      name="subject"
                       value={formState.subject}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 appearance-none bg-white transition-all duration-200"
-                      required
+                      disabled={isSubmitting}
                     >
                       <option value="" disabled>Select a subject</option>
-                      <option value="math">Mathematics</option>
-                      <option value="science">Science</option>
-                      <option value="language">Languages</option>
-                      <option value="humanities">Humanities</option>
-                      <option value="test-prep">Test Preparation</option>
-                      <option value="other">Other</option>
+                      <option value="Mathematics">Mathematics</option>
+                      <option value="Science">Science</option>
+                      <option value="Languages">Languages</option>
+                      <option value="Humanities">Humanities</option>
+                      <option value="Test Preparation">Test Preparation</option>
+                      <option value="Other">Other</option>
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -327,28 +395,41 @@ const CTASection = () => {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
                     value={formState.message}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-gray-900 transition-all duration-200"
                     rows={4}
                     placeholder="Tell us about your tutoring needs..."
+                    disabled={isSubmitting}
                   />
                 </div>
                 
                 <div className="relative group">
-                  <button
-                    type="submit"
-                    className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                  {/* Using Button component just like your working call button */}
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={handleDirectSubmit}
+                    className="w-full cursor-pointer"
+                    disabled={isSubmitting}
                   >
-                    Submit Request
-                  </button>
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-500 group-hover:duration-200"></div>
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </span>
+                    ) : 'Submit Request'}
+                  </Button>
                 </div>
                 
                 <p className="text-xs text-gray-500 text-center mt-4">
                   By submitting this form, you agree to our <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a> and <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>.
                 </p>
-              </form>
+              </div>
             </div>
           </div>
         </div>
