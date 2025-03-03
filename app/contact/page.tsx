@@ -10,6 +10,9 @@ export default function ContactPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
+  // Add browser detection state
+  const [isBrowser, setIsBrowser] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   
   // Create refs for sections
   const heroRef = useRef<HTMLDivElement>(null);
@@ -27,28 +30,45 @@ export default function ContactPage() {
     message: '',
   });
   
-  // Track scroll position for parallax and animations
+  // Initialize browser detection
   useEffect(() => {
+    setIsBrowser(true);
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }
+  }, []);
+  
+  // Track scroll position for parallax and animations - only in browser
+  useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isBrowser]);
   
-  // Track mouse position for interactive elements
+  // Track mouse position for interactive elements - only in browser
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isBrowser]);
 
-  // Enhanced Animation on scroll with Intersection Observer
+  // Enhanced Animation on scroll with Intersection Observer - only in browser
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, index) => {
@@ -72,12 +92,14 @@ export default function ContactPage() {
     return () => {
       elements.forEach(el => observer.unobserve(el));
     };
-  }, []);
+  }, [isBrowser]);
 
-  // Mouse parallax effect with enhanced 3D feel
+  // Mouse parallax effect with enhanced 3D feel - safe for SSG
   const calculateMouseParallax = (factor: number, depth = 1) => {
-    const x = (mousePosition.x - window.innerWidth / 2) * factor;
-    const y = (mousePosition.y - window.innerHeight / 2) * factor;
+    if (!isBrowser) return {}; // Return empty object during SSG
+    
+    const x = (mousePosition.x - windowSize.width / 2) * factor;
+    const y = (mousePosition.y - windowSize.height / 2) * factor;
     return { 
       transform: `translate3d(${x}px, ${y}px, 0) scale(${1 + depth * 0.01})`,
       transition: 'transform 0.1s ease-out'
@@ -93,8 +115,10 @@ export default function ContactPage() {
     }));
   };
 
-  // Handle form submission
+  // Handle form submission - safe for SSG
   const handleSubmit = () => {
+    if (!isBrowser) return; // Don't run during SSG
+    
     // Show loading state
     setIsSubmitting(true);
     
@@ -152,9 +176,26 @@ export default function ContactPage() {
     });
   };
 
-  // Handle consultation click
+  // Handle consultation click - safe for SSG
   const handleConsultationClick = () => {
-    window.location.href = 'tel:5618703273';
+    if (isBrowser) {
+      window.location.href = 'tel:5618703273';
+    }
+  };
+
+  // Safe gradient style function
+  const getGradientStyle = () => {
+    if (!isBrowser) return {}; // Return empty object during SSG
+    
+    return {
+      background: `
+        radial-gradient(circle at ${mousePosition.x / windowSize.width * 100}% ${mousePosition.y / windowSize.height * 100}%, 
+          rgba(147, 197, 253, 0.4) 0%,
+          rgba(79, 70, 229, 0.2) 45%, 
+          transparent 70%
+        )
+      `,
+    };
   };
 
   // Add these styles to your component or import them
@@ -390,7 +431,7 @@ export default function ContactPage() {
           
           <div 
             className="container mx-auto px-6 py-12 z-10 text-center"
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+            style={isBrowser ? { transform: `translateY(${scrollY * 0.1}px)` } : {}}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white reveal fade-up">
               <span className="relative inline-block">
@@ -400,7 +441,7 @@ export default function ContactPage() {
             </h1>
             
             <p className="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto leading-relaxed mb-8 reveal fade-up" style={{ animationDelay: '100ms' }}>
-              We're here to answer your questions and help you achieve academic excellence
+              We&apos;re here to answer your questions and help you achieve academic excellence
             </p>
             
             <div className="flex flex-col md:flex-row justify-center items-center gap-4 mt-8 reveal fade-up" style={{ animationDelay: '200ms' }}>
@@ -447,7 +488,7 @@ export default function ContactPage() {
                   </h2>
                   
                   <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                    We're excited to hear from you and learn how we can help you reach your academic goals. Fill out the form, and our team will get back to you promptly.
+                    We&apos;re excited to hear from you and learn how we can help you reach your academic goals. Fill out the form, and our team will get back to you promptly.
                   </p>
                   
                   <div className="space-y-6 mb-10">
@@ -503,7 +544,7 @@ export default function ContactPage() {
                         </svg>
                         <span className="font-medium">Thank you! Your message has been sent successfully.</span>
                       </div>
-                      <p className="mt-2 text-sm">We'll contact you shortly to discuss your tutoring needs.</p>
+                      <p className="mt-2 text-sm">We&apos;ll contact you shortly to discuss your tutoring needs.</p>
                     </div>
                   )}
                   
@@ -675,7 +716,7 @@ export default function ContactPage() {
               {[
                 {
                   question: "How do I schedule a tutoring session?",
-                  answer: "You can schedule a tutoring session by filling out the contact form above, calling us directly at (561) 870-3273, or sending an email to yourpeaktuto@gmail.com. We'll match you with the right tutor and find a time that works for your schedule."
+                  answer: "You can schedule a tutoring session by filling out the contact form above, calling us directly at (561) 870-3273, or sending an email to yourpeaktuto@gmail.com. We&apos;ll match you with the right tutor and find a time that works for your schedule."
                 },
                 {
                   question: "Where do tutoring sessions take place?",
@@ -687,7 +728,7 @@ export default function ContactPage() {
                 },
                 {
                   question: "Can I change my tutor if it's not a good fit?",
-                  answer: "Absolutely! We want to ensure you have the best experience possible. If you feel your current tutor isn't the right match, simply let us know and we'll pair you with another qualified tutor who better suits your learning style and needs."
+                  answer: "Absolutely! We want to ensure you have the best experience possible. If you feel your current tutor isn&apos;t the right match, simply let us know and we&apos;ll pair you with another qualified tutor who better suits your learning style and needs."
                 },
                 {
                   question: "What age groups do you work with?",
@@ -706,7 +747,7 @@ export default function ContactPage() {
             </div>
             
             <div className="text-center mt-10 reveal fade-up">
-              <p className="text-gray-700 mb-4">Still have questions? Don't hesitate to reach out!</p>
+              <p className="text-gray-700 mb-4">Still have questions? Don&apos;t hesitate to reach out!</p>
               <button 
                 onClick={() => formRef.current?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300 btn-shine"
@@ -727,15 +768,7 @@ export default function ContactPage() {
             {/* Interactive gradient overlay that follows mouse */}
             <div 
               className="absolute inset-0 opacity-40"
-              style={{
-                background: `
-                  radial-gradient(circle at ${mousePosition.x / window.innerWidth * 100}% ${mousePosition.y / window.innerHeight * 100}%, 
-                    rgba(147, 197, 253, 0.4) 0%,
-                    rgba(79, 70, 229, 0.2) 45%, 
-                    transparent 70%
-                  )
-                `,
-              }}
+              style={getGradientStyle()}
             />
             
             {/* Grid pattern */}
