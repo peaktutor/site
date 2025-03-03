@@ -7,7 +7,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Peak Tutoring | All Ages | Math, Science, Test Prep | Boca Raton, FL',
-  description: 'Expert tutoring for all ages: elementary, middle, high school, college, and adults. Math, science, test prep & more. Free consultation in [Your City]!',
+  description: 'Expert tutoring for all ages: elementary, middle, high school, college, and adults. Math, science, test prep & more. Free consultation in Boca Raton, FL!',
   keywords: [
     'tutoring services', 'all ages tutoring', 'elementary tutoring', 'middle school tutoring',
     'high school tutoring', 'college tutoring', 'adult tutoring', 'math tutoring',
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
     'chemistry tutoring', 'physics tutoring'
   ],
   openGraph: {
-    title: 'Peak Tutoring | All Ages | Math, Science, Test Prep | [Your City]',
-    description: 'Expert tutoring for all ages: elementary, middle, high school, college, and adults. Math, science, test prep & more. Free consultation in [Your City]!',
+    title: 'Peak Tutoring | All Ages | Math, Science, Test Prep | Boca Raton, FL',
+    description: 'Expert tutoring for all ages: elementary, middle, high school, college, and adults. Math, science, test prep & more. Free consultation in Boca Raton, FL!',
     url: 'https://peaktutoring.com',
     siteName: 'Peak Tutoring',
     locale: 'en_US',
