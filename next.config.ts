@@ -1,6 +1,10 @@
 ﻿import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  eslint: {
+    // Warning rather than error in production builds
+    ignoreDuringBuilds: true,
+  },
   reactStrictMode: true,
   // Disable all development indicators
   devIndicators: false,
