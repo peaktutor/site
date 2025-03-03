@@ -27,6 +27,10 @@ const debounce = (fn: Function, delay: number): Function => {
 };
 
 export default function FAQPage() {
+  // Browser detection state
+  const [isBrowser, setIsBrowser] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
+  
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [scrollY, setScrollY] = useState(0);
@@ -47,11 +51,25 @@ export default function FAQPage() {
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  // Derived values for parallax effects
-  const rotateX = useTransform(smoothMouseY, [0, window.innerHeight], [5, -5]);
-  const rotateY = useTransform(smoothMouseX, [0, window.innerWidth], [-5, 5]);
-  const moveX = useTransform(smoothMouseX, [0, window.innerWidth], [-15, 15]);
-  const moveY = useTransform(smoothMouseY, [0, window.innerHeight], [-15, 15]);
+  // Set browser and get window dimensions on mount
+  useEffect(() => {
+    setIsBrowser(true);
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    
+    // Set loaded state after a short delay to trigger initial animations
+    setTimeout(() => setIsLoaded(true), 100);
+  }, []);
+  
+  // Derived values for parallax effects - safely handle window references
+  const rotateX = useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [5, -5]);
+  const rotateY = useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [-5, 5]);
+  const moveX = useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [-15, 15]);
+  const moveY = useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [-15, 15]);
   
   // Enhanced FAQ data with categories
   const faqCategories = useMemo(() => [
@@ -215,21 +233,21 @@ export default function FAQPage() {
   // Performance optimized event handlers
   const handleScroll = useCallback(
     throttle(() => {
+      if (!isBrowser) return;
       setScrollY(window.scrollY);
     }, 16), // ~60fps
-  []);
+  [isBrowser]);
 
   const handleMouseMove = useCallback(
     throttle((e: MouseEvent) => {
+      if (!isBrowser) return;
       // Update both raw values for calculations and framer motion values
       const { clientX, clientY } = e;
       setMousePosition({ x: clientX, y: clientY });
       mouseX.set(clientX);
       mouseY.set(clientY);
     }, 16), // ~60fps
-  [mouseX, mouseY]);
-
-
+  [mouseX, mouseY, isBrowser]);
 
   const toggleQuestion = useCallback((index: number) => {
     // Force re-render when toggling the same question by setting to a temporary value before setting to null
@@ -243,30 +261,38 @@ export default function FAQPage() {
 
   // Enhanced parallax effect with better performance
   const calculateMouseParallax = useCallback((factor: number, depth = 1) => {
-    const x = (mousePosition.x - window.innerWidth / 2) * factor;
-    const y = (mousePosition.y - window.innerHeight / 2) * factor;
+    if (!isBrowser) return { transform: 'none' };
+    
+    const x = (mousePosition.x - windowSize.width / 2) * factor;
+    const y = (mousePosition.y - windowSize.height / 2) * factor;
     
     // Use transform for better performance
     return { 
       transform: `translate3d(${x}px, ${y}px, 0) scale(${1 + depth * 0.01})`,
       transition: 'transform 0.1s cubic-bezier(0.33, 1, 0.68, 1)'
     };
-  }, [mousePosition]);
+  }, [mousePosition, windowSize, isBrowser]);
 
   // Track scroll position for parallax effects - throttled for performance
   useEffect(() => {
+    if (!isBrowser) return;
+    
     window.addEventListener('scroll', handleScroll as unknown as EventListener, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll as unknown as EventListener);
-  }, [handleScroll]);
+  }, [handleScroll, isBrowser]);
   
   // Track mouse position for interactive elements - throttled for performance
   useEffect(() => {
+    if (!isBrowser) return;
+    
     window.addEventListener('mousemove', handleMouseMove as unknown as EventListener, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove as unknown as EventListener);
-  }, [handleMouseMove]);
+  }, [handleMouseMove, isBrowser]);
 
   // Animation delay based on element visibility using Intersection Observer
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -281,13 +307,10 @@ export default function FAQPage() {
     const elements = document.querySelectorAll('.reveal');
     elements.forEach(el => observer.observe(el));
 
-    // Set loaded state after a short delay to trigger initial animations
-    setTimeout(() => setIsLoaded(true), 100);
-
     return () => {
       elements.forEach(el => observer.unobserve(el));
     };
-  }, []);
+  }, [isBrowser]);
 
   // Enhanced animations and visual effects CSS
   const animationStyles = `
@@ -527,7 +550,7 @@ export default function FAQPage() {
             style={{ 
               x: moveX,
               y: moveY,
-              rotate: useTransform(smoothMouseX, [0, window.innerWidth], [0, 5])
+              rotate: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [0, 5])
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 0.8 : 0 }}
@@ -536,8 +559,8 @@ export default function FAQPage() {
           <motion.div 
             className="absolute top-[40%] right-[5%] w-[28vw] h-[28vw] rounded-full bg-gradient-to-r from-purple-300/20 via-pink-300/20 to-indigo-300/30 blur-[70px] float-medium"
             style={{ 
-              x: useTransform(smoothMouseX, [0, window.innerWidth], [0, -15]),
-              y: useTransform(smoothMouseY, [0, window.innerHeight], [0, -5])
+              x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [0, -15]),
+              y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [0, -5])
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 0.7 : 0 }}
@@ -546,8 +569,8 @@ export default function FAQPage() {
           <motion.div 
             className="absolute bottom-[15%] left-[15%] w-[25vw] h-[25vw] rounded-full bg-gradient-to-r from-cyan-300/20 via-blue-400/20 to-indigo-300/20 blur-[60px] float-fast"
             style={{ 
-              x: useTransform(smoothMouseX, [0, window.innerWidth], [0, 10]),
-              y: useTransform(smoothMouseY, [0, window.innerHeight], [0, 10])
+              x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [0, 10]),
+              y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [0, 10])
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 0.6 : 0 }}
@@ -558,8 +581,8 @@ export default function FAQPage() {
           <motion.div 
             className="absolute top-[20%] right-[25%] opacity-30"
             style={{ 
-              x: useTransform(smoothMouseX, [0, window.innerWidth], [-20, 20]),
-              y: useTransform(smoothMouseY, [0, window.innerHeight], [-20, 20]),
+              x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [-20, 20]),
+              y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [-20, 20]),
               rotateX,
               rotateY
             }}
@@ -588,10 +611,10 @@ export default function FAQPage() {
           <motion.div 
             className="absolute bottom-[30%] right-[15%] opacity-30"
             style={{ 
-              x: useTransform(smoothMouseX, [0, window.innerWidth], [20, -20]),
-              y: useTransform(smoothMouseY, [0, window.innerHeight], [20, -20]),
-              rotateX: useTransform(smoothMouseY, [0, window.innerHeight], [-5, 5]),
-              rotateY: useTransform(smoothMouseX, [0, window.innerWidth], [5, -5])
+              x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [20, -20]),
+              y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [20, -20]),
+              rotateX: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [-5, 5]),
+              rotateY: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [5, -5])
             }}
           >
             <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -675,7 +698,7 @@ export default function FAQPage() {
           
           <div 
             className="container mx-auto px-6 py-16 z-10 text-center"
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+            style={isBrowser ? { transform: `translateY(${scrollY * 0.1}px)` } : {}}
           >
             <motion.h1 
               initial={{ opacity: 0, y: -30 }}
@@ -858,7 +881,6 @@ export default function FAQPage() {
                     <button 
                       className="text-blue-600 font-medium mx-1 hover:underline"
                       onClick={() => {
-                        
                         setActiveCategory('all');
                       }}
                     >
@@ -904,8 +926,8 @@ export default function FAQPage() {
             <motion.div 
               className="absolute -top-40 -left-40 w-80 h-80 rounded-full bg-blue-500/30 blur-3xl"
               style={{ 
-                x: useTransform(smoothMouseX, [0, window.innerWidth], [-20, 20]),
-                y: useTransform(smoothMouseY, [0, window.innerHeight], [-20, 20])
+                x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [-20, 20]),
+                y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [-20, 20])
               }}
               animate={{
                 scale: [1, 1.1, 1],
@@ -920,8 +942,8 @@ export default function FAQPage() {
             <motion.div 
               className="absolute top-10 right-10 w-60 h-60 rounded-full bg-indigo-500/20 blur-3xl"
               style={{ 
-                x: useTransform(smoothMouseX, [0, window.innerWidth], [20, -20]),
-                y: useTransform(smoothMouseY, [0, window.innerHeight], [-10, 10])
+                x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [20, -20]),
+                y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [-10, 10])
               }}
               animate={{
                 scale: [1, 1.2, 1],
@@ -937,8 +959,8 @@ export default function FAQPage() {
             <motion.div 
               className="absolute bottom-10 left-1/3 w-60 h-60 rounded-full bg-purple-500/20 blur-3xl"
               style={{ 
-                x: useTransform(smoothMouseX, [0, window.innerWidth], [-10, 10]),
-                y: useTransform(smoothMouseY, [0, window.innerHeight], [10, -10])
+                x: useTransform(smoothMouseX, [0, isBrowser ? windowSize.width : 1200], [-10, 10]),
+                y: useTransform(smoothMouseY, [0, isBrowser ? windowSize.height : 800], [10, -10])
               }}
               animate={{
                 scale: [1, 1.15, 1],

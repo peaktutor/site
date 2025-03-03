@@ -8,6 +8,9 @@ import AuthBackground from '@/components/auth/AuthBackground';
 export default function AboutPage() {
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // Add browser detection state
+  const [isBrowser, setIsBrowser] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   
   const heroRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
@@ -15,28 +18,45 @@ export default function AboutPage() {
   const uniqueRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   
-  // Track scroll position for parallax and animations
+  // Initialize browser detection
   useEffect(() => {
+    setIsBrowser(true);
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }
+  }, []);
+  
+  // Track scroll position for parallax and animations - only in browser
+  useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isBrowser]);
   
-  // Track mouse position for interactive elements
+  // Track mouse position for interactive elements - only in browser
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isBrowser]);
 
-  // Animation on scroll with Intersection Observer
+  // Animation on scroll with Intersection Observer - only in browser
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -54,12 +74,14 @@ export default function AboutPage() {
     return () => {
       elements.forEach(el => observer.unobserve(el));
     };
-  }, []);
+  }, [isBrowser]);
 
-  // Mouse parallax effect
+  // Safe mouse parallax effect for SSG
   const calculateMouseParallax = (factor: number) => {
-    const x = (mousePosition.x - window.innerWidth / 2) * factor;
-    const y = (mousePosition.y - window.innerHeight / 2) * factor;
+    if (!isBrowser) return { x: 0, y: 0 };
+    
+    const x = (mousePosition.x - windowSize.width / 2) * factor;
+    const y = (mousePosition.y - windowSize.height / 2) * factor;
     return { x, y };
   };
 
@@ -71,21 +93,21 @@ export default function AboutPage() {
           {/* Organic shapes that follow scroll and mouse movement */}
           <div 
             className="absolute top-[10%] left-[15%] w-[30vw] h-[30vw] rounded-full bg-gradient-to-r from-blue-200/20 to-indigo-300/20 blur-[80px]"
-            style={{ 
+            style={isBrowser ? { 
               transform: `translate(${calculateMouseParallax(-0.02).x}px, ${calculateMouseParallax(-0.02).y + scrollY * 0.05}px)` 
-            }}
+            } : {}}
           />
           <div 
             className="absolute top-[40%] right-[10%] w-[25vw] h-[25vw] rounded-full bg-gradient-to-r from-purple-200/20 to-indigo-200/20 blur-[60px]"
-            style={{ 
+            style={isBrowser ? { 
               transform: `translate(${calculateMouseParallax(0.01).x}px, ${calculateMouseParallax(0.01).y - scrollY * 0.03}px)` 
-            }}
+            } : {}}
           />
           <div 
             className="absolute bottom-[20%] left-[20%] w-[20vw] h-[20vw] rounded-full bg-gradient-to-r from-blue-200/10 to-purple-300/10 blur-[50px]"
-            style={{ 
+            style={isBrowser ? { 
               transform: `translate(${calculateMouseParallax(0.015).x}px, ${calculateMouseParallax(0.015).y + scrollY * 0.02}px)` 
-            }}
+            } : {}}
           />
         </div>
       </div>
@@ -144,7 +166,7 @@ export default function AboutPage() {
           
           <div 
             className="container mx-auto px-6 py-12 z-10 text-center"
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+            style={isBrowser ? { transform: `translateY(${scrollY * 0.1}px)` } : {}}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white">
               About <span className="relative inline-block">
@@ -161,9 +183,11 @@ export default function AboutPage() {
               <Link 
                 href="#story" 
                 className="px-8 py-3 bg-white text-blue-800 rounded-full hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg font-medium"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent) => {
                   e.preventDefault();
-                  storyRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  if (isBrowser && storyRef.current) {
+                    storyRef.current.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }}
               >
                 Our Story
@@ -251,7 +275,7 @@ export default function AboutPage() {
                     a handful of dedicated tutors.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    Today, we've grown into a community of passionate educators committed to academic excellence and student success. 
+                    Today, we&apos;ve grown into a community of passionate educators committed to academic excellence and student success. 
                     But our founding principles remain the same—creating tailored learning experiences that build both knowledge and confidence.
                   </p>
                   
@@ -461,8 +485,8 @@ export default function AboutPage() {
                 Join Us on Our Journey
               </h3>
               <p className="text-xl text-gray-700 mb-10 leading-relaxed">
-                Whether you're a student looking for support or an experienced tutor wanting to make a difference, 
-                we'd love to hear from you.
+                Whether you&apos;re a student looking for support or an experienced tutor wanting to make a difference, 
+                we&apos;d love to hear from you.
               </p>
               
               <Link 
