@@ -6,11 +6,23 @@ frontend:
         - npm ci
     build:
       commands:
+        - env | grep -e NODE_ENV -e NEXT_ >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
     files:
       - '**/*'
+    discard-paths: no
   cache:
     paths:
       - node_modules/**/*
+  customHeaders:
+    - pattern: '**/*'
+      headers:
+        - key: 'Strict-Transport-Security'
+          value: 'max-age=31536000; includeSubDomains'
+        - key: 'X-Frame-Options'
+          value: 'SAMEORIGIN'
+        - key: 'X-XSS-Protection'
+          value: '1; mode=block'
+  buildPath: /
