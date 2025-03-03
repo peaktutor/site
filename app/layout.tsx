@@ -19,6 +19,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Peak Tutoring",
   description: "Personalized tutoring services for academic excellence",
+  icons: {
+    icon: [
+      
+      { url: '/icon.png?v=1', type: 'image/png', sizes: '64x64' }
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

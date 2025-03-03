@@ -3,8 +3,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Container from '../ui/Container';
 import { Button, Icons } from '@/components/ui/Button';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 const ServicesSection = () => {
+  const router = useRouter(); // Initialize router
   const sectionRef = useRef<HTMLElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
@@ -68,9 +70,12 @@ const ServicesSection = () => {
     }
   ];
 
-  const handleCallClick = () => {
-    window.location.href = 'tel:5618703273';
+  // Navigate to services page
+  const handleLearnMoreClick = () => {
+    router.push('/services');
   };
+
+  // Contact page navigation removed
 
   return (
     <section 
@@ -188,9 +193,12 @@ const ServicesSection = () => {
                   ))}
                 </div>
                 
-                {/* Animated button */}
+                {/* Animated button - Now with onClick handler */}
                 <div className="relative overflow-hidden group/btn rounded-lg">
-                  <button className="w-full py-3 px-4 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg bg-white group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 relative z-10">
+                  <button 
+                    className="w-full py-3 px-4 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg bg-white group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 relative z-10"
+                    onClick={handleLearnMoreClick}
+                  >
                     Learn More
                     <svg 
                       className="inline-block ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform duration-300" 
@@ -209,61 +217,7 @@ const ServicesSection = () => {
           ))}
         </div>
 
-        {/* Enhanced CTA Button with animation */}
-        <div 
-          className={`text-center mt-16 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-          style={{ transitionDelay: '450ms' }}
-        >
-          <div className="relative inline-block group">
-            <Button
-              variant="gradient"
-              size="lg"
-              icon={
-                <div className="relative">
-                  <svg
-  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-30"
-  xmlns="http://www.w3.org/2000/svg"
-  fill="none"
-  viewBox="0 0 24 24"
-  stroke="currentColor"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-  />
-</svg>
-<svg
-  className="relative inline-flex h-5 w-5"
-  xmlns="http://www.w3.org/2000/svg"
-  fill="none"
-  viewBox="0 0 24 24"
-  stroke="currentColor"
->
-  <path
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-  />
-</svg>
-                </div>
-              }
-              onClick={handleCallClick}
-              className="shadow-lg hover:shadow-2xl hover:shadow-blue-200 transition-all duration-500 transform group-hover:scale-105"
-            >
-              Schedule Your Free Consultation
-            </Button>
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg blur opacity-0 group-hover:opacity-30 transition duration-500 group-hover:duration-200"></div>
-          </div>
-          
-          <p className="text-sm text-gray-500 mt-4 max-w-md mx-auto">
-            Join hundreds of students who have transformed their academic performance with our specialized tutoring programs
-          </p>
-        </div>
+        {/* Contact button removed */}
       </Container>
     </section>
   );
