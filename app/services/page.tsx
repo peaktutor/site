@@ -7,6 +7,10 @@ import Link from 'next/link';
 
 
 export default function ServicesPage() {
+  // Browser detection state
+  const [isBrowser, setIsBrowser] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
+  
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
@@ -20,28 +24,45 @@ export default function ServicesPage() {
   const approachRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   
+  // Initialize browser detection on mount
+  useEffect(() => {
+    setIsBrowser(true);
+    if (typeof window !== 'undefined') {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+  }, []);
+  
   // Track scroll position for parallax and animations
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isBrowser]);
   
   // Track mouse position for interactive elements
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isBrowser]);
 
   // Enhanced Animation on scroll with Intersection Observer
   useEffect(() => {
+    if (!isBrowser) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, index) => {
@@ -65,16 +86,25 @@ export default function ServicesPage() {
     return () => {
       elements.forEach(el => observer.unobserve(el));
     };
-  }, []);
+  }, [isBrowser]);
 
-  // Mouse parallax effect with enhanced 3D feel
+  // Mouse parallax effect with enhanced 3D feel - with browser check
   const calculateMouseParallax = (factor: number, depth = 1) => {
-    const x = (mousePosition.x - window.innerWidth / 2) * factor;
-    const y = (mousePosition.y - window.innerHeight / 2) * factor;
+    if (!isBrowser) return { transform: 'none' };
+    
+    const x = (mousePosition.x - windowSize.width / 2) * factor;
+    const y = (mousePosition.y - windowSize.height / 2) * factor;
     return { 
       transform: `translate3d(${x}px, ${y}px, 0) scale(${1 + depth * 0.01})`,
       transition: 'transform 0.1s ease-out'
     };
+  };
+
+  // Smooth scroll handler with browser check
+  const scrollToRef = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (isBrowser && ref && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   // Add these styles to your component or import them
@@ -236,7 +266,7 @@ export default function ServicesPage() {
           
           <div 
             className="container mx-auto px-6 py-12 z-10 text-center"
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+            style={isBrowser ? { transform: `translateY(${scrollY * 0.1}px)` } : {}}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white reveal fade-up">
               Our <span className="relative inline-block">
@@ -253,9 +283,9 @@ export default function ServicesPage() {
               <Link 
                 href="#services" 
                 className="px-8 py-3 bg-white text-blue-800 rounded-full hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg font-medium btn-shine"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent) => {
                   e.preventDefault();
-                  overviewRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  scrollToRef(overviewRef);
                 }}
               >
                 Explore Services
