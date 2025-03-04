@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Peak Tutoring | All Ages | Math, Science, Test Prep | Boca Raton, FL',
     description: 'Expert tutoring for all ages: elementary, middle, high school, college, and adults. Math, science, test prep & more. Free consultation in Boca Raton, FL!',
-    url: 'https://peaktutoring.com',
+    url: 'https://peaktutor.net',
     siteName: 'Peak Tutoring',
     locale: 'en_US',
     type: 'website',
@@ -78,11 +78,10 @@ export default function Home() {
             <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-indigo-500 mx-auto"></div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {[
               { value: '500+', label: 'Students Helped', icon: 'Users' },
               { value: '98%', label: 'Success Rate', icon: 'Chart' },
-              { value: '30+', label: 'Expert Tutors', icon: 'Briefcase' },
               { value: '12+', label: 'Subjects Offered', icon: 'BookOpen' },
             ].map((stat, index) => (
               <div key={index} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
