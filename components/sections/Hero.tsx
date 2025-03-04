@@ -151,7 +151,7 @@ const Hero = () => {
                 </h1>
                 
                 <p className="mb-8 text-lg text-blue-100 md:text-xl max-w-xl">
-                  Expert tutoring tailored to your needs. Get started today with a free consultation
+                  Expert tutoring tailored to your needs in Palm Beach County, FL. Get started today with a free consultation
                   and take the first step towards academic excellence.
                 </p>
                 
