@@ -728,7 +728,7 @@ export default function ContactPage() {
                 },
                 {
                   question: "Can I change my tutor if it's not a good fit?",
-                  answer: "Absolutely! We want to ensure you have the best experience possible. If you feel your current tutor isn&apos;t the right match, simply let us know and we&apos;ll pair you with another qualified tutor who better suits your learning style and needs."
+                  answer: "Certainly. We are committed to providing you with an optimal learning experience. Should you determine that your assigned tutor does not align with your specific learning style or needs, please inform us, and we will facilitate a reassignment to another qualified tutor who is a more suitable match."
                 },
                 {
                   question: "What age groups do you work with?",
