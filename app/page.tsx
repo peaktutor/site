@@ -4,6 +4,7 @@ import Hero from '@/components/sections/Hero';
 import ServicesSection from '@/components/sections/ServicesSection';
 import CTASection from '@/components/sections/CTASection';
 import { Metadata } from 'next';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Peak Tutoring | All Ages | Math, Science, Test Prep | Boca Raton, FL',
@@ -29,6 +30,17 @@ export default function Home() {
   return (
     
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Google Conversion Tracking Script */}
+      <Script id="google-conversion-tracking" strategy="afterInteractive">
+        {`
+          window.addEventListener('load', function() {
+            if (window.location.pathname == '/') {
+              gtag('event', 'conversion', {'send_to': 'AW-16904684765/EZetCMqOkqoaEN2J5Pw-'});
+            }
+          });
+        `}
+      </Script>
+      
       {/* Hero Section with dynamic background and engaging content */}
       <Hero />
       

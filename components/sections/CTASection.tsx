@@ -265,7 +265,7 @@ const CTASection = () => {
                 <h3 className="text-xl font-bold text-gray-900">Request More Information</h3>
                 <div className="flex items-center">
                   <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  <span className="text-xs text-gray-600">We typically respond within 24 hours</span>
+                  <span className="text-xs text-gray-600">We respond within 24 hours</span>
                 </div>
               </div>
               
