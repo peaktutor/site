@@ -177,7 +177,7 @@ const Hero = () => {
                     onClick={handleConsultationClick}
                     className="hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-white/20"
                   >
-                    Get Your Free Consultation
+                    (561) 870-3273
                   </Button>
                   <p className="text-sm text-blue-100 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
                     No obligation, just results

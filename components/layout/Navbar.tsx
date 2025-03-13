@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { Menu, X, Home, BookOpen, Users, HelpCircle, MessageSquare } from 'lucide-react';
+import { Menu, X, Home, BookOpen, Users, HelpCircle, MessageSquare, Phone } from 'lucide-react';
 
 const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -83,15 +83,26 @@ const Navbar = () => {
               </Link>
             ))}
 
-            <Link href="/contact" className="ml-4">
+            {/* Call Us Button */}
+            <a href="tel:561-870-3273" className="ml-4">
               <Button 
                 variant="gradient" 
                 size="sm"
                 className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white px-6 py-2 rounded-md transition-all duration-300 hover:shadow-md flex items-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
+                <Phone className="h-4 w-4 mr-2" />
+                561-870-3273
+              </Button>
+            </a>
+
+            {/* Contact Us Button */}
+            <Link href="/contact" className="ml-3">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-2 rounded-md transition-all duration-300 hover:shadow-md flex items-center"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
                 Contact Us
               </Button>
             </Link>
@@ -131,20 +142,38 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
-              <Link
-                href="/contact"
-                className="block px-3 py-3"
-                onClick={() => setIsMobileMenuOpen(false)}
+            
+            {/* Call Us Button - Mobile */}
+            <a
+              href="tel:561-870-3273"
+              className="block px-3 py-3"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Button
+                variant="gradient"
+                size="sm"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 rounded-md flex items-center justify-center"
               >
-                <Button
-                  variant="gradient"
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 rounded-md flex items-center justify-center"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Contact Us
-                </Button>
-              </Link>
+                <Phone className="h-4 w-4 mr-2" />
+                Call: 561-870-3273
+              </Button>
+            </a>
+            
+            {/* Contact Us Button - Mobile */}
+            <Link
+              href="/contact"
+              className="block px-3 py-3"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full border-2 border-blue-600 text-blue-600 bg-white py-3 rounded-md flex items-center justify-center"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
       )}
