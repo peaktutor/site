@@ -32,6 +32,73 @@ export default function Home() {
       {/* Hero Section with dynamic background and engaging content */}
       <Hero />
       
+      {/* Promotional Banner */}
+      <section className="py-8 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden border-t-2 border-white">
+        {/* Animated floating shapes */}
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-white opacity-5 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-blue-300 opacity-5 translate-x-1/3 translate-y-1/3 animate-pulse-slower"></div>
+        
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <pattern id="discount-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#discount-grid)" />
+          </svg>
+        </div>
+        
+        {/* Sparkles */}
+        <div className="absolute top-5 left-1/4 w-3 h-3 bg-yellow-200 rounded-full opacity-75 animate-ping"></div>
+        <div className="absolute bottom-10 right-1/3 w-2 h-2 bg-yellow-200 rounded-full opacity-75 animate-ping animation-delay-700"></div>
+        <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-yellow-200 rounded-full opacity-75 animate-ping animation-delay-1500"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 py-2">
+            <div className="flex-1">
+              <div className="flex items-center mb-3">
+                <div className="h-10 w-10 flex items-center justify-center bg-yellow-400 text-blue-900 font-bold rounded-full mr-3 shadow-lg animate-bounce">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="text-3xl md:text-4xl font-extrabold text-white">
+                  <span className="text-white">SPECIAL OFFER</span>
+                </div>
+              </div>
+              
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center">
+                <span className="inline-block transform rotate-2 bg-yellow-300 text-blue-800 px-3 py-1 rounded-lg shadow-lg mr-3 animate-pulse">
+                  10% OFF
+                </span> 
+                All Future Tutoring Sessions!
+              </h3>
+              
+              <p className="text-blue-100 text-lg max-w-2xl">
+                Start your academic journey today and enjoy exclusive savings on all our professional tutoring services. Limited time offer!
+              </p>
+            </div>
+            
+            <div className="md:ml-6">
+              <a 
+                href="#contact" 
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-white p-1 text-blue-600 shadow-lg transition-all duration-300 ease-out hover:shadow-xl"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 transition-all duration-300 ease-out group-hover:bg-opacity-100"></span>
+                <span className="relative flex items-center space-x-2 rounded-md bg-white px-6 py-3 transition-all duration-300 ease-out group-hover:bg-opacity-0 group-hover:text-white">
+                  <span className="font-bold text-lg">Claim Your Discount</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Services Section with animated cards */}
       <ServicesSection />
       
@@ -97,6 +164,73 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Promotional Banner */}
+      <section className="py-8 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden">
+        {/* Animated floating shapes */}
+        <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-white opacity-5 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-blue-300 opacity-5 translate-x-1/3 translate-y-1/3 animate-pulse-slower"></div>
+        
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <pattern id="discount-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#discount-grid)" />
+          </svg>
+        </div>
+        
+        {/* Sparkles */}
+        <div className="absolute top-5 left-1/4 w-3 h-3 bg-yellow-200 rounded-full opacity-75 animate-ping"></div>
+        <div className="absolute bottom-10 right-1/3 w-2 h-2 bg-yellow-200 rounded-full opacity-75 animate-ping animation-delay-700"></div>
+        <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-yellow-200 rounded-full opacity-75 animate-ping animation-delay-1500"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 py-2">
+            <div className="flex-1">
+              <div className="flex items-center mb-3">
+                <div className="h-10 w-10 flex items-center justify-center bg-yellow-400 text-blue-900 font-bold rounded-full mr-3 shadow-lg animate-bounce">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="text-3xl md:text-4xl font-extrabold">
+                  <span className="text-white font-bold tracking-wider drop-shadow-md">SPECIAL OFFER</span>
+                </div>
+              </div>
+              
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center">
+                <span className="inline-block transform rotate-2 bg-yellow-300 text-blue-800 px-3 py-1 rounded-lg shadow-lg mr-3 animate-pulse">
+                  10% OFF
+                </span> 
+                All Future Tutoring Sessions!
+              </h3>
+              
+              <p className="text-blue-100 text-lg max-w-2xl">
+                Start your academic journey today and enjoy exclusive savings on all our professional tutoring services. Limited time offer!
+              </p>
+            </div>
+            
+            <div className="md:ml-6">
+              <a 
+                href="#contact" 
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-white p-1 text-blue-600 shadow-lg transition-all duration-300 ease-out hover:shadow-xl"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 transition-all duration-300 ease-out group-hover:bg-opacity-100"></span>
+                <span className="relative flex items-center space-x-2 rounded-md bg-white px-6 py-3 transition-all duration-300 ease-out group-hover:bg-opacity-0 group-hover:text-white">
+                  <span className="font-bold text-lg">Claim Your Discount</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

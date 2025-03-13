@@ -196,7 +196,7 @@ const Hero = () => {
                   <div className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full bg-purple-500/20 backdrop-blur-md z-10 floating-element-delayed"></div>
                   
                   <Image
-                    src="/images/desk-setup.jpeg"
+                    src="/images/tutor.jpg"
                     alt="Professional study setup with books and materials"
                     width={600}
                     height={450}
